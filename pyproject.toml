@@ -1,0 +1,20 @@
+[project]
+name = "agentic-corner-store-exercise"
+version = "0.1.0"
+description = "Terminal corner-store assistant built with the OpenAI Agents SDK: tools, memory, streaming and tracing."
+readme = "README.md"
+authors = [
+    { name = "Mikkaiser", email = "mikaelrsimoes19@gmail.com" }
+]
+requires-python = ">=3.12"
+dependencies = [
+    "openai-agents>=0.22.3",
+    "python-dotenv>=1.2.4",
+]
+
+[project.scripts]
+agentic-corner-store-exercise = "agentic_corner_store_exercise:main"
+
+[build-system]
+requires = ["uv_build>=0.12.10,<0.13.0"]
+build-backend = "uv_build"
