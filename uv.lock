@@ -9,7 +9,7 @@ resolution-markers = [
 [[package]]
 name = "agentic-corner-store-exercise"
 version = "0.1.0"
-source = { editable = "." }
+source = { virtual = "." }
 dependencies = [
     { name = "openai-agents" },
     { name = "python-dotenv" },

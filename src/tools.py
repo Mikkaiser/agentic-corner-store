@@ -1,6 +1,13 @@
-from agents import Agent, Runner, function_tool
+from agents import Agent, Runner, function_tool, trace
 from store_data import INVENTORY, DISCOUNT_CODES
+from pydantic import BaseModel
+import uuid
 
+class ProductItem(BaseModel):
+    product_name: str
+    quantity: int
+
+session_id=str(uuid.uuid4())
 
 memory = []
 
@@ -32,11 +39,50 @@ def check_stock(product_name: str) -> str:
     return str(stock)
 
 
+def get_price_helper(product_name) -> float | None:
+    item = INVENTORY.get(product_name, None)
+    if(item is None):
+        return None
+
+    price = item.get("price")
+    return price
+
+@function_tool
+def get_price(product_name: str) -> str:
+    """Returns the unit price. Reports clearly when the
+        product does not exist. in case the user provides the product
+        in singular and you can't fetch by the name, try with plural before
+        confirming it doesn't exist"""
+    price = get_price_helper(product_name)
+    if price is None:
+        return "Not Found"
+    return str(f"{price:.2f} AED")
+
+@function_tool
+def calculate_total(items: list[ProductItem]) -> str:
+    """Returns the total cost of the basket by multiplying
+        each unit price by its quantity. Check the stock first.
+        in case the user writes incorrect gramatical names, search for the closest match of what he meant.
+        Tell the user if some item is not available.
+        in case the user provides the product
+        in singular and you can't fetch by the name, try with plural before
+        confirming it doesn't exist."""
+    total = 0
+    for item in items:
+        price = get_price_helper(item.product_name)
+        if price is None:
+            return f"{item.product_name} Not Found"
+        total += price * item.quantity
+    return str(f"{total:.2f} AED")
+
+    
+
+
 agent = Agent(
     name="Corner Store Assistant",
     instructions=system_prompt,
     model="gpt-5.4-nano",
-    tools=[check_stock]
+    tools=[check_stock, get_price, calculate_total]
 )
 
 
@@ -45,7 +91,8 @@ def call_agent(user_prompt) -> str:
     memory.append({
         "role": "user", "content": user_prompt
     })
-    result = Runner.run_sync(agent, memory)
+    with trace("Corner Store Assistant", group_id=session_id):
+        result = Runner.run_sync(agent, memory)
     memory = result.to_input_list()
 
     return result.final_output

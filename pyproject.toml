@@ -11,10 +11,3 @@ dependencies = [
     "openai-agents>=0.22.3",
     "python-dotenv>=1.2.4",
 ]
-
-[project.scripts]
-agentic-corner-store-exercise = "agentic_corner_store_exercise:main"
-
-[build-system]
-requires = ["uv_build>=0.12.10,<0.13.0"]
-build-backend = "uv_build"
