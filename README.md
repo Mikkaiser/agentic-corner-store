@@ -42,11 +42,11 @@ The agent:
 - [x] System prompt covering all six business rules
 - [x] `check_stock` tool
 - [x] Basic chat loop with in-memory conversation history
-- [ ] `get_price` tool
-- [ ] `calculate_total` tool
+- [x] `get_price` tool
+- [x] `calculate_total` tool
+- [x] Tracing with a custom workflow name and shared session id
 - [ ] `exit` command to end the chat loop
 - [ ] Streaming output with tool-call indicators
-- [ ] Tracing with a custom workflow name and shared session id
 - [ ] Error handling, so a failing tool or a network error doesn't crash the loop
 - [ ] *(Optional)* SQLite memory so sessions can be resumed after a restart
 - [ ] *(Optional)* Experiments, such as an `apply_discount` tool
