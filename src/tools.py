@@ -1,7 +1,10 @@
+import time
 from agents import Agent, Runner, function_tool, trace
+from openai.types.responses import ResponseTextDeltaEvent
 from store_data import INVENTORY, DISCOUNT_CODES
 from pydantic import BaseModel
 import uuid
+import asyncio
 
 class ProductItem(BaseModel):
     product_name: str
@@ -75,24 +78,69 @@ def calculate_total(items: list[ProductItem]) -> str:
         total += price * item.quantity
     return str(f"{total:.2f} AED")
 
+@function_tool
+def apply_discount(code: str, total: float) -> str:
+    """
+    Returns the final result of the basket after applying the discount code.
+    """
+    item = DISCOUNT_CODES.get(code.upper())
+    if item == None:
+        return "code not found"
     
+    percent = item.get("percent")
+    min_total = item.get("min_total")
+    active = item.get("active")
+
+    if(total < min_total):
+        return f"min total should be {min_total} for this discount code."
+    if not active:
+        return f"discount code {code} is NOT active at the moment."
+
+    new_total = total - (total * percent / 100)
+
+    return str(f"{new_total:.2f}")
+    
+
+    
+
+async def stream_items(result):
+    started = False
+    calls_collection = {}
+    async for event in result.stream_events():
+        if event.type == "raw_response_event" and isinstance(event.data, ResponseTextDeltaEvent):
+            if not started:
+                print("Agent: ", end="")
+                started = True
+            print(event.data.delta, end="", flush=True)
+            time.sleep(0.1)
+
+        elif event.type == "run_item_stream_event":
+            if event.item.type == "tool_call_item":
+                raw = event.item.raw_item
+                calls_collection[raw.call_id] = (raw.name, raw.arguments)
+            elif event.item.type == "tool_call_output_item":
+                call_id = event.item.raw_item["call_id"]
+                name, arguments = calls_collection.pop(call_id)
+                print(f"[tool] {name}({arguments}) ... done")
+
+            time.sleep(0.2)
+    print()
 
 
 agent = Agent(
     name="Corner Store Assistant",
     instructions=system_prompt,
     model="gpt-5.4-nano",
-    tools=[check_stock, get_price, calculate_total]
+    tools=[check_stock, get_price, calculate_total, apply_discount]
 )
 
 
-def call_agent(user_prompt) -> str:
+async def call_agent(user_prompt) -> None:
     global memory
     memory.append({
         "role": "user", "content": user_prompt
     })
     with trace("Corner Store Assistant", group_id=session_id):
-        result = Runner.run_sync(agent, memory)
+        result = Runner.run_streamed(agent, memory)
+        await stream_items(result)
     memory = result.to_input_list()
-
-    return result.final_output

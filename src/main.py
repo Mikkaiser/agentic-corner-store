@@ -1,15 +1,15 @@
 from dotenv import load_dotenv
-import os
 from tools import call_agent
+import asyncio
 load_dotenv()
 
-print('Agentic Corner Store Exercise: \n')
-print('--------------------------------')
 
+async def main():
+    print('Agentic Corner Store Exercise: \n')
+    print('--------------------------------')
+    while True:
+        user_prompt = input('You: ')
+        await call_agent(user_prompt)
 
-while True:
-    user_prompt = input('You: ')
-    response = call_agent(user_prompt)
-    print("Agent: " + response)
-
+asyncio.run(main())
 
