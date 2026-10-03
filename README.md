@@ -14,13 +14,7 @@ The full brief is in [`exercise/corner_store_assistant_exercise.pdf`](exercise/c
 
 ## Example
 
-```text
-You: Do you have milk, and how much would 3 cost?
-[tool] check_stock({"product":"milk"}) ... done
-[tool] get_price({"product":"milk"}) ... done
-[tool] calculate_total({"items":[{"product_name":"milk","quantity":3}]}) ... done
-Agent: Yes, we have milk in stock! It costs 7.00 AED each, so 3 bottles come to 21.00 AED.
-```
+![Demo: the assistant checks stock and prices for milk, adds 2 coffees to the basket, then applies the SAVE10 discount code](docs/demo.gif)
 
 ## Business rules
 
@@ -50,6 +44,8 @@ The agent:
 
 ```text
 .
+├── docs/
+│   └── demo.gif                              # Terminal demo shown above
 ├── exercise/
 │   ├── corner_store_assistant_exercise.pdf   # Exercise brief
 │   └── store_data_original.py                # Original store data from the brief
