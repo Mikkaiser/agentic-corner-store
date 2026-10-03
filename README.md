@@ -45,9 +45,6 @@ The agent:
 - [x] Tracing with a custom workflow name and shared session id
 - [x] Streaming output with tool-call indicators
 - [x] *(Optional)* `apply_discount` tool (checks the code exists, is active and meets the minimum total)
-- [ ] `exit` command to end the chat loop
-- [ ] Error handling, so a failing tool or a network error doesn't crash the loop
-- [ ] *(Optional)* SQLite memory so sessions can be resumed after a restart
 
 ## Project structure
 
