@@ -1,4 +1,4 @@
-# 🛒 Agentic Corner Store Assistant
+# 🛒🤖 Agentic Corner Store Assistant
 
 This is an interactive terminal assistant for a small neighbourhood store, built with the [OpenAI Agents SDK](https://openai.github.io/openai-agents-python/). Customers chat with it in plain language ("Do you have milk, and how much would 3 cost?"). The agent answers by calling **tools** for every fact, so it never guesses a price or a stock level.
 
