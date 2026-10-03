@@ -2,7 +2,11 @@
 
 This is an interactive terminal assistant for a small neighbourhood store, built with the [OpenAI Agents SDK](https://openai.github.io/openai-agents-python/). Customers chat with it in plain language ("Do you have milk, and how much would 3 cost?"). The agent answers by calling **tools** for every fact, so it never guesses a price or a stock level.
 
-I built it as a hands-on practice exercise for the core ideas of agentic apps:
+## Why I built it
+
+I made this project to understand how an agent loop works inside: how tool calls flow between the model and the code, how streaming shows that work as it happens, and how tracing lets you follow each step afterwards.
+
+I used the OpenAI Agents SDK, but the same structure works with any other agent framework. The concepts are the important part, not the library. The project covers these core ideas of agentic apps:
 
 - **Agents and system prompts**: a friendly, short-spoken store assistant that follows strict business rules
 - **Function tools** (`@function_tool`): stock lookups, prices, basket totals and discount codes come from code, not from the model's memory
