@@ -26,13 +26,12 @@ def send_to_pushover(subject, text_body):
 
 
 def send_message(subject, text_body, html_body):
-    if os.getenv("PUSHOVER_USER") and os.getenv("PUSHOVER_TOKEN"):
-        try:
-            send_to_pushover(subject, text_body)
-            print("[notify] sent with pushover")
-            return
-        except Exception as error:
-            print(f"[notify] pushover failed: {error}")
+    try:
+        send_to_pushover(subject, text_body)
+        print("[notify] sent with pushover")
+        return
+    except Exception as error:
+        print(f"[notify] pushover failed: {error}")
     print("[notify] using fallback")
     send_to_fallback(subject, text_body)
 

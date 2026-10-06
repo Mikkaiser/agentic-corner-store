@@ -54,8 +54,12 @@ The agent:
 │   ├── corner_store_assistant_exercise.pdf   # Exercise brief
 │   └── store_data_original.py                # Original store data from the brief
 ├── src/
-│   ├── main.py         # Async terminal chat loop
-│   ├── tools.py        # Agent definition, system prompt, tools and memory
+│   ├── PHASE_1/
+│   │   ├── main.py     # Async terminal chat loop
+│   │   └── tools.py    # Agent definition, system prompt, tools and memory
+│   ├── PHASE_2/
+│   │   ├── notifications.py   # Owner notifications (Pushover with fallback)
+│   │   └── 2.2/promo.py       # Weekly promo workflow
 │   └── store_data.py   # Expanded inventory and discount codes
 ├── .env.example
 └── pyproject.toml
@@ -74,8 +78,10 @@ cp .env.example .env
 # then edit .env and set OPENAI_API_KEY
 
 # Run the assistant
-uv run src/main.py
+PYTHONPATH=src:src/PHASE_2 uv run src/PHASE_1/main.py
 ```
+
+`PYTHONPATH` lets every script import the shared `store_data.py` and `notifications.py`. Use the same prefix for the Phase 2 scripts, for example `PYTHONPATH=src:src/PHASE_2 uv run src/PHASE_2/2.2/promo.py`.
 
 ## Tech stack
 
