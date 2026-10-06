@@ -59,7 +59,7 @@ The agent:
 │   │   └── tools.py    # Agent definition, system prompt, tools and memory
 │   ├── PHASE_2/
 │   │   ├── notifications.py   # Owner notifications (Pushover with fallback)
-│   │   └── 2.2/promo.py       # Weekly promo workflow
+│   │   └── ORCHESTRATED_BY_CODE/promo.py   # Weekly promo workflow
 │   └── store_data.py   # Expanded inventory and discount codes
 ├── .env.example
 └── pyproject.toml
@@ -78,10 +78,14 @@ cp .env.example .env
 # then edit .env and set OPENAI_API_KEY
 
 # Run the assistant
-PYTHONPATH=src:src/PHASE_2 uv run src/PHASE_1/main.py
+PYTHONPATH=src uv run src/PHASE_1/main.py
 ```
 
-`PYTHONPATH` lets every script import the shared `store_data.py` and `notifications.py`. Use the same prefix for the Phase 2 scripts, for example `PYTHONPATH=src:src/PHASE_2 uv run src/PHASE_2/2.2/promo.py`.
+The Phase 1 chat needs `PYTHONPATH=src` so it can import the shared `store_data.py`. The Phase 2 scripts add the shared folders to the import path themselves, so they run without it:
+
+```bash
+uv run src/PHASE_2/ORCHESTRATED_BY_CODE/promo.py
+```
 
 ## Tech stack
 
