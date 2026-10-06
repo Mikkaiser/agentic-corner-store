@@ -14,7 +14,7 @@ I used the OpenAI Agents SDK, but the same structure works with any other agent 
 - **Streaming**: replies show up word by word, with live `[tool] …` lines while tools run
 - **Tracing**: each chat session can be found in the OpenAI traces dashboard under one workflow name and session id
 
-The full brief is in [`exercise/corner_store_assistant_exercise.pdf`](exercise/corner_store_assistant_exercise.pdf).
+The full brief is in [`exercise/corner_store_assistant_exercise.pdf`](exercise/corner_store_assistant_exercise.pdf). Phase 1 is the single agent built here; Phase 2 extends it step by step with multi-agent orchestration (parallel agents, agents as tools, handoffs and owner notifications).
 
 ## Example
 
