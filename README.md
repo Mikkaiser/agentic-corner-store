@@ -43,6 +43,8 @@ The agent:
 - [x] Tracing with a custom workflow name and shared session id
 - [x] Streaming output with tool-call indicators
 - [x] *(Optional)* `apply_discount` tool (checks the code exists, is active and meets the minimum total)
+- [x] Phase 2, step 2.1: owner notifications (`notify_owner` tool, Pushover with a log-file fallback)
+- [x] Phase 2, step 2.2: weekly promo orchestrated by code (three parallel writers, a picker, and a sender with forced tool use)
 
 ## Project structure
 
@@ -76,6 +78,7 @@ uv sync
 # Configure your API key
 cp .env.example .env
 # then edit .env and set OPENAI_API_KEY
+# optional: set PUSHOVER_USER and PUSHOVER_TOKEN for owner push notifications
 
 # Run the assistant
 PYTHONPATH=src uv run src/PHASE_1/main.py
@@ -87,8 +90,11 @@ The Phase 1 chat needs `PYTHONPATH=src` so it can import the shared `store_data.
 uv run src/PHASE_2/ORCHESTRATED_BY_CODE/promo.py
 ```
 
+The promo script picks the product with the most stock and an active discount code, has three writers draft a message in parallel, picks the best one and sends it to the owner. This sends a real push notification when Pushover is configured. Without `PUSHOVER_USER` and `PUSHOVER_TOKEN`, the notification is printed and appended to `owner_notifications.log` instead.
+
 ## Tech stack
 
 - [OpenAI Agents SDK](https://github.com/openai/openai-agents-python) (`openai-agents`)
+- [Pushover](https://pushover.net/) for owner push notifications
 - [python-dotenv](https://github.com/theskumar/python-dotenv) for loading the API key
 - [uv](https://docs.astral.sh/uv/) for dependency management
