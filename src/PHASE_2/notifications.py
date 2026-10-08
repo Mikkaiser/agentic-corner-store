@@ -14,20 +14,22 @@ def send_to_fallback(subject, text_body):
         file.write(line + "\n")
 
 
-def send_to_pushover(subject, text_body):
+def send_to_pushover(subject, text_body, html_body):
     payload = {
         "user": os.getenv("PUSHOVER_USER"),
         "token": os.getenv("PUSHOVER_TOKEN"),
         "title": subject,
-        "message": text_body,
+        "message": html_body or text_body,
     }
+    if html_body:
+        payload["html"] = 1
     response = requests.post(PUSHOVER_URL, data=payload, timeout=10)
     response.raise_for_status()
 
 
 def send_message(subject, text_body, html_body):
     try:
-        send_to_pushover(subject, text_body)
+        send_to_pushover(subject, text_body, html_body)
         print("[notify] sent with pushover")
         return
     except Exception as error:
@@ -45,7 +47,8 @@ def notify_owner(subject: str, text_body: str, html_body: str) -> str:
     Args:
         subject: A short title for the notification
         text_body: The notification content as plain text
-        html_body: The notification content as HTML
+        html_body: The notification content as HTML. Use only <b>, <i>, <u>,
+            <a href> and <font color> tags, the only ones Pushover renders
     """
     send_message(subject, text_body, html_body)
     return "Notification sent"
