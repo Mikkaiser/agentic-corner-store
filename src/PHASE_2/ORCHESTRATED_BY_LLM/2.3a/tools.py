@@ -122,7 +122,7 @@ inventory_specialist = Agent(
 )
 
 pricing_specialist = Agent(
-    name="Inventory Specialist",
+    name="Pricing Specialist",
     model=MODEL_NAME,
     tools=[get_price, calculate_total, apply_discount],
     instructions=pricing_specialist_prompt
