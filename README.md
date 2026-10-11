@@ -46,6 +46,7 @@ The agent:
 - [x] Phase 2, step 2.1: owner notifications (`notify_owner` tool, Pushover with a log-file fallback)
 - [x] Phase 2, step 2.2: weekly promo orchestrated by code (three parallel writers, a picker, and a sender with forced tool use)
 - [x] Phase 2, step 2.3a: the chat becomes a Shopkeeper that uses an Inventory Specialist and a Pricing Specialist as tools (agents as tools)
+- [x] Phase 2, step 2.3b: the weekly promo again, but a Promo Manager (an LLM) calls the three writers as tools and sends the notification itself
 
 ## Project structure
 
@@ -64,10 +65,14 @@ The agent:
 │   │   ├── notifications.py   # Owner notifications (Pushover with fallback)
 │   │   ├── ORCHESTRATED_BY_CODE/promo.py   # Weekly promo workflow
 │   │   └── ORCHESTRATED_BY_LLM/
-│   │       ├── shopkeeper.png   # draw_graph of the Shopkeeper and its specialists
-│   │       └── 2.3a/
-│   │           ├── main.py      # Async terminal chat loop
-│   │           └── tools.py     # Shopkeeper, specialists, tools and memory
+│   │       ├── shopkeeper.png      # draw_graph of the Shopkeeper and its specialists
+│   │       ├── promo_manager.png   # draw_graph of the Promo Manager and its tools
+│   │       ├── 2.3a/
+│   │       │   ├── main.py      # Async terminal chat loop
+│   │       │   └── tools.py     # Shopkeeper, specialists, tools and memory
+│   │       └── 2.3b/
+│   │           ├── main.py      # Builds the brief and runs the Promo Manager
+│   │           └── tools.py     # Brief, prompts, writers and Promo Manager
 │   └── store_data.py   # Expanded inventory and discount codes
 ├── .env.example
 └── pyproject.toml
@@ -95,11 +100,14 @@ The Phase 1 chat needs `PYTHONPATH=src` so it can import the shared `store_data.
 ```bash
 uv run src/PHASE_2/ORCHESTRATED_BY_CODE/promo.py
 uv run src/PHASE_2/ORCHESTRATED_BY_LLM/2.3a/main.py
+uv run src/PHASE_2/ORCHESTRATED_BY_LLM/2.3b/main.py
 ```
 
 The promo script picks the product with the most stock and an active discount code, has three writers draft a message in parallel, picks the best one and sends it to the owner. This sends a real push notification when Pushover is configured. Without `PUSHOVER_USER` and `PUSHOVER_TOKEN`, the notification is printed and appended to `owner_notifications.log` instead.
 
 The 2.3a chat is the Phase 1 assistant split into specialists. The Shopkeeper talks to the customer and owns no function tools. It calls the Inventory Specialist (`check_stock`) for availability and the Pricing Specialist (`get_price`, `calculate_total`, `apply_discount`) for prices, totals and discounts, each one wrapped with `as_tool`. `shopkeeper.png` is the `draw_graph` picture of that structure, which needs the Graphviz `dot` program installed (`sudo apt install graphviz`).
+
+The 2.3b script builds the same brief as the code version, but no Python decides the order of the steps. The Promo Manager has the three writers (as tools) and `notify_owner`, and its prompt lists the steps: get a draft from each writer, choose the best one, send exactly one notification. `promo_manager.png` is its `draw_graph` picture.
 
 ## Tech stack
 
