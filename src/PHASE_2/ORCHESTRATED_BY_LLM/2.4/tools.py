@@ -209,5 +209,5 @@ async def call_agent(user_prompt) -> None:
     with trace("Corner Store Shopkeeper", group_id=session_id):
         result = Runner.run_streamed(shopkeeper, memory)
         await print_events(result)
-    print(f"AGENT        {result.final_output}\n")
+    print(f"AGENT ({result.last_agent.name})  {result.final_output}\n")
     memory = result.to_input_list()
